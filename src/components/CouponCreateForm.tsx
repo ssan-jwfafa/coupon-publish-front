@@ -1,5 +1,5 @@
 import { Loader2, Plus } from 'lucide-react'
-import type { FormEvent } from 'react'
+import type { SubmitEventHandler } from 'react'
 import type { CouponFormState, RequestState, SetCouponForm } from '../types/coupon'
 import { PanelTitle } from './PanelTitle'
 
@@ -7,7 +7,7 @@ type CouponCreateFormProps = {
   couponForm: CouponFormState
   createState: RequestState
   onChange: SetCouponForm
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onSubmit: SubmitEventHandler<HTMLFormElement>
 }
 
 export function CouponCreateForm({

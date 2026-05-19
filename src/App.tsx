@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { SubmitEventHandler } from 'react'
 import {
   createCoupon,
   deleteCoupon,
@@ -127,7 +127,7 @@ function App() {
     }
   }
 
-  async function handleCreateCoupon(event: FormEvent<HTMLFormElement>) {
+  const handleCreateCoupon: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
     setCreateState('loading')
     try {
@@ -173,7 +173,7 @@ function App() {
     }
   }
 
-  async function handleIssueCoupon(event: FormEvent<HTMLFormElement>) {
+  const handleIssueCoupon: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
     if (!selectedId) {
       setNotice({ tone: 'error', message: '먼저 쿠폰을 생성하거나 couponId를 입력하세요.' })
