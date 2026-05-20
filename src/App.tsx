@@ -18,11 +18,18 @@ import { CouponSelector } from './components/CouponSelector'
 import { CouponStatusPanel } from './components/CouponStatusPanel'
 import { NoticeBanner } from './components/NoticeBanner'
 import { Sidebar } from './components/Sidebar'
+import { OrderManagement } from './components/OrderManagement'
+import type { AppView } from './components/Sidebar'
 import type { Coupon, CouponIssue, Notice, Remaining, RequestState, Statistics } from './types/coupon'
 import { createInitialCouponForm } from './utils/couponForm'
 import { toApiDateTime } from './utils/date'
 
+function getViewFromHash(): AppView {
+  return window.location.hash === '#orders' ? 'orders' : 'coupons'
+}
+
 function App() {
+  const [activeView, setActiveView] = useState<AppView>(getViewFromHash)
   const [couponForm, setCouponForm] = useState(createInitialCouponForm)
   const [selectedCouponId, setSelectedCouponId] = useState('')
   const [userId, setUserId] = useState('user-1')
@@ -47,6 +54,18 @@ function App() {
   }, [currentCoupon, remaining])
 
   const selectedId = Number(selectedCouponId || currentCoupon?.couponId)
+
+  useEffect(() => {
+    function handleHashChange() {
+      setActiveView(getViewFromHash())
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange)
+    }
+  }, [])
 
   useEffect(() => {
     if (!notice) return
@@ -225,57 +244,72 @@ function App() {
     refreshDashboard(coupon.couponId)
   }
 
+  function handleViewChange(view: AppView) {
+    setActiveView(view)
+    window.history.replaceState(null, '', `#${view}`)
+  }
+
   return (
     <main className="app-shell">
-      <Sidebar />
+      <Sidebar activeView={activeView} onViewChange={handleViewChange} />
 
       <section className="workspace">
         <header className="topbar">
           <div>
             <span className="eyebrow">Operations Console</span>
-            <h1>쿠폰 발급 현황</h1>
+            <h1>{activeView === 'coupons' ? '쿠폰 발급 현황' : '실시간 주문 관리'}</h1>
           </div>
-          <NoticeBanner notice={notice} />
+          {activeView === 'coupons' ? (
+            <NoticeBanner notice={notice} />
+          ) : (
+            <div className="notice success">주문 접수, 결제 확인, 배송 상태를 실시간 운영 흐름으로 확인합니다.</div>
+          )}
         </header>
 
-        <CouponMetrics currentCoupon={currentCoupon} remaining={remaining} statistics={statistics} />
+        {activeView === 'coupons' ? (
+          <>
+            <CouponMetrics currentCoupon={currentCoupon} remaining={remaining} statistics={statistics} />
 
-        <section className="content-grid">
-          <CouponCreateForm
-            couponForm={couponForm}
-            createState={createState}
-            onChange={setCouponForm}
-            onSubmit={handleCreateCoupon}
-          />
+            <section className="content-grid">
+              <CouponCreateForm
+                couponForm={couponForm}
+                createState={createState}
+                onChange={setCouponForm}
+                onSubmit={handleCreateCoupon}
+              />
 
-          <CouponSelector
-            coupons={coupons}
-            deletingCouponId={deletingCouponId}
-            refreshState={refreshState}
-            selectedCouponId={selectedCouponId}
-            selectedId={selectedId}
-            onDeleteCoupon={handleDeleteCoupon}
-            onLoadCoupon={handleLoadCoupon}
-            onSelectCoupon={handleSelectCoupon}
-            onSelectedCouponIdChange={setSelectedCouponId}
-          />
+              <CouponSelector
+                coupons={coupons}
+                deletingCouponId={deletingCouponId}
+                refreshState={refreshState}
+                selectedCouponId={selectedCouponId}
+                selectedId={selectedId}
+                onDeleteCoupon={handleDeleteCoupon}
+                onLoadCoupon={handleLoadCoupon}
+                onSelectCoupon={handleSelectCoupon}
+                onSelectedCouponIdChange={setSelectedCouponId}
+              />
 
-          <CouponIssueForm
-            issueState={issueState}
-            lastIssue={lastIssue}
-            userId={userId}
-            onSubmit={handleIssueCoupon}
-            onUserIdChange={setUserId}
-          />
+              <CouponIssueForm
+                issueState={issueState}
+                lastIssue={lastIssue}
+                userId={userId}
+                onSubmit={handleIssueCoupon}
+                onUserIdChange={setUserId}
+              />
 
-          <CouponStatusPanel
-            currentCoupon={currentCoupon}
-            issuedPercent={issuedPercent}
-            refreshState={refreshState}
-            selectedId={selectedId}
-            onRefresh={() => refreshDashboard()}
-          />
-        </section>
+              <CouponStatusPanel
+                currentCoupon={currentCoupon}
+                issuedPercent={issuedPercent}
+                refreshState={refreshState}
+                selectedId={selectedId}
+                onRefresh={() => refreshDashboard()}
+              />
+            </section>
+          </>
+        ) : (
+          <OrderManagement />
+        )}
       </section>
     </main>
   )
