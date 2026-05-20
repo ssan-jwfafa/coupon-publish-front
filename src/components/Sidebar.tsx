@@ -55,7 +55,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
         </a>
       </nav>
 
-      <div className="flow-panel">
+      {/* <div className="flow-panel">
         <span className="eyebrow">Event Flow</span>
         <ol>
           <li>API issues coupon</li>
@@ -63,7 +63,7 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
           <li>Flink aggregates</li>
           <li>Redis stores state</li>
         </ol>
-      </div>
+      </div> */}
     </aside>
   )
 }

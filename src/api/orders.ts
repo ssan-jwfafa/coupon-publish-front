@@ -67,6 +67,6 @@ export function getOrderSummary() {
   return request<OrderSummary>('/api/orders/summary')
 }
 
-export function getOrderEvents(limit = 20) {
+export function getOrderEvents(limit = 5) {
   return request<OrderEvent[]>(`/api/orders/events?limit=${limit}`)
 }

@@ -69,6 +69,8 @@ const INITIAL_ORDER_FORM: OrderCreatePayload = {
   address: '',
 }
 
+const INITIAL_AMOUNT_INPUT = '10000'
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('ko-KR', {
     style: 'currency',
@@ -85,6 +87,13 @@ function formatRelativeTime(value: string) {
   if (diffMinutes < 60) return `${diffMinutes}분 전`
   if (diffMinutes < 1_440) return `${Math.floor(diffMinutes / 60)}시간 전`
   return `${Math.floor(diffMinutes / 1_440)}일 전`
+}
+
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat('ko-KR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value))
 }
 
 function getStatusClass(status: OrderStatus) {
@@ -160,6 +169,7 @@ export function OrderManagement() {
   const [events, setEvents] = useState<OrderEvent[]>([])
   const [selectedOrderId, setSelectedOrderId] = useState('')
   const [orderForm, setOrderForm] = useState<OrderCreatePayload>(INITIAL_ORDER_FORM)
+  const [amountInput, setAmountInput] = useState(INITIAL_AMOUNT_INPUT)
   const [statusDraft, setStatusDraft] = useState<OrderStatus | ''>('')
   const [notice, setNotice] = useState('주문 데이터를 불러오는 중입니다.')
   const [loadState, setLoadState] = useState<RequestState>('idle')
@@ -180,7 +190,7 @@ export function OrderManagement() {
       const [orderPage, dashboardOrderPage, eventResult] = await Promise.all([
         getOrders({ status, query: effectiveQuery.trim() || undefined, page: 0, size: 20 }),
         getOrders({ page: 0, size: 100 }),
-        getOrderEvents(20),
+        getOrderEvents(5),
       ])
 
       setOrders(orderPage.content)
@@ -227,9 +237,10 @@ export function OrderManagement() {
     try {
       const order = await createOrder({
         ...orderForm,
-        amount: Number(orderForm.amount),
+        amount: Number(amountInput),
       })
       setOrderForm(INITIAL_ORDER_FORM)
+      setAmountInput(INITIAL_AMOUNT_INPUT)
       setSelectedStatus('ALL')
       setQuery('')
       setSelectedOrderId(order.orderId)
@@ -370,8 +381,8 @@ export function OrderManagement() {
                   min={1}
                   required
                   type="number"
-                  value={orderForm.amount}
-                  onChange={(event) => setOrderForm((form) => ({ ...form, amount: Number(event.target.value) }))}
+                  value={amountInput}
+                  onChange={(event) => setAmountInput(event.target.value)}
                 />
               </label>
             </div>
@@ -430,6 +441,14 @@ export function OrderManagement() {
                     <dt>지역</dt>
                     <dd>{selectedOrder.address}</dd>
                   </div>
+                  <div>
+                    <dt>주문 시간</dt>
+                    <dd>{formatDateTime(selectedOrder.createdAt)}</dd>
+                  </div>
+                  <div>
+                    <dt>수정 시간</dt>
+                    <dd>{formatDateTime(selectedOrder.updatedAt)}</dd>
+                  </div>
                 </dl>
 
                 <div className="order-actions">
@@ -466,7 +485,7 @@ export function OrderManagement() {
               {events.length === 0 ? (
                 <li>{notice}</li>
               ) : (
-                events.map((event) => <li key={event.eventId}>{event.message}</li>)
+                events.slice(0, 5).map((event) => <li key={event.eventId}>{event.message}</li>)
               )}
             </ol>
           </section>
