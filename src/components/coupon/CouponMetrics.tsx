@@ -1,7 +1,7 @@
 import { BarChart3, Clock3, Gift, Ticket } from 'lucide-react'
-import type { Coupon, Remaining, Statistics } from '../types/coupon'
-import { formatDateTime } from '../utils/date'
-import { MetricCard } from './MetricCard'
+import type { Coupon, Remaining, Statistics } from '../../types/coupon'
+import { formatDateTime } from '../../utils/date'
+import { MetricCard } from '../MetricCard'
 import { ValidityCard } from './ValidityCard'
 
 type CouponMetricsProps = {

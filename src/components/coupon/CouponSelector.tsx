@@ -1,6 +1,6 @@
 import { Loader2, RefreshCcw, Trash2 } from 'lucide-react'
-import type { Coupon, RequestState } from '../types/coupon'
-import { PanelTitle } from './PanelTitle'
+import type { Coupon, RequestState } from '../../types/coupon'
+import { PanelTitle } from '../PanelTitle'
 
 type CouponSelectorProps = {
   coupons: Coupon[]

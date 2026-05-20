@@ -1,6 +1,6 @@
 import { CalendarRange } from 'lucide-react'
-import type { Coupon } from '../types/coupon'
-import { formatDateTime } from '../utils/date'
+import type { Coupon } from '../../types/coupon'
+import { formatDateTime } from '../../utils/date'
 
 type ValidityCardProps = {
   coupon: Coupon | null

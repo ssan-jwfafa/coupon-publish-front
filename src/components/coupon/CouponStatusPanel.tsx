@@ -1,6 +1,6 @@
 import { BarChart3, Loader2, RefreshCcw } from 'lucide-react'
-import type { Coupon, RequestState } from '../types/coupon'
-import { PanelTitle } from './PanelTitle'
+import type { Coupon, RequestState } from '../../types/coupon'
+import { PanelTitle } from '../PanelTitle'
 
 type CouponStatusPanelProps = {
   currentCoupon: Coupon | null

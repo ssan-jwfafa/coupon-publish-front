@@ -1,7 +1,7 @@
 import { Loader2, Plus } from 'lucide-react'
 import type { SubmitEventHandler } from 'react'
-import type { CouponFormState, RequestState, SetCouponForm } from '../types/coupon'
-import { PanelTitle } from './PanelTitle'
+import type { CouponFormState, RequestState, SetCouponForm } from '../../types/coupon'
+import { PanelTitle } from '../PanelTitle'
 
 type CouponCreateFormProps = {
   couponForm: CouponFormState
