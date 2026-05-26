@@ -644,6 +644,54 @@ button:disabled {
   gap: 8px;
 }
 
+.order-pagination {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.pagination-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-actions button {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.pagination-actions button:hover:not(:disabled) {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+.pagination-actions button:disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.pagination-actions strong {
+  min-width: 56px;
+  color: var(--text-strong);
+  font-family: var(--mono);
+  font-size: 13px;
+  text-align: center;
+}
+
 .order-row {
   width: 100%;
   min-height: 58px;

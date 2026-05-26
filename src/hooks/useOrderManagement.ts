@@ -19,9 +19,14 @@ import {
 import { toErrorMessage } from '../utils/orders/formatters'
 import { applyStatusChangeToSummary, createSummaryFromOrders } from '../utils/orders/summary'
 
+const ORDER_PAGE_SIZE = 20
+
 export function useOrderManagement() {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatusFilter>('ALL')
   const [query, setQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const [orders, setOrders] = useState<Order[]>([])
   const [summary, setSummary] = useState<OrderSummary>(EMPTY_SUMMARY)
   const [events, setEvents] = useState<OrderEvent[]>([])
@@ -39,19 +44,23 @@ export function useOrderManagement() {
     [orders, selectedOrderId],
   )
 
-  const loadOrders = useCallback(async (overrides?: { status?: OrderStatusFilter; query?: string }) => {
+  const loadOrders = useCallback(async (overrides?: { status?: OrderStatusFilter; query?: string; page?: number }) => {
     setLoadState('loading')
     try {
       const effectiveStatus = overrides?.status ?? selectedStatus
       const effectiveQuery = overrides?.query ?? query
+      const effectivePage = overrides?.page ?? currentPage
       const status = effectiveStatus === 'ALL' ? undefined : effectiveStatus
       const [orderPage, dashboardOrderPage, eventResult] = await Promise.all([
-        getOrders({ status, query: effectiveQuery.trim() || undefined, page: 0, size: 20 }),
+        getOrders({ status, query: effectiveQuery.trim() || undefined, page: effectivePage, size: ORDER_PAGE_SIZE }),
         getOrders({ page: 0, size: 100 }),
         getOrderEvents(5),
       ])
 
       setOrders(orderPage.content)
+      setCurrentPage(orderPage.page)
+      setTotalElements(orderPage.totalElements)
+      setTotalPages(orderPage.totalPages)
       setSummary(createSummaryFromOrders(dashboardOrderPage.content))
       setEvents(eventResult)
       setSelectedOrderId((currentId) => {
@@ -66,7 +75,7 @@ export function useOrderManagement() {
     } finally {
       setLoadState('idle')
     }
-  }, [query, selectedStatus])
+  }, [currentPage, query, selectedStatus])
 
   useEffect(() => {
     const timerId = window.setTimeout(() => {
@@ -77,6 +86,21 @@ export function useOrderManagement() {
       window.clearTimeout(timerId)
     }
   }, [loadOrders])
+
+  function handleQueryChange(nextQuery: string) {
+    setQuery(nextQuery)
+    setCurrentPage(0)
+  }
+
+  function handleStatusChange(status: OrderStatusFilter) {
+    setSelectedStatus(status)
+    setCurrentPage(0)
+  }
+
+  function handlePageChange(page: number) {
+    const lastPage = Math.max(totalPages - 1, 0)
+    setCurrentPage(Math.min(Math.max(page, 0), lastPage))
+  }
 
   async function handleSelectOrder(orderId: string) {
     setSelectedOrderId(orderId)
@@ -101,9 +125,10 @@ export function useOrderManagement() {
       setAmountInput(INITIAL_AMOUNT_INPUT)
       setSelectedStatus('ALL')
       setQuery('')
+      setCurrentPage(0)
       setSelectedOrderId(order.orderId)
       setNotice(`${order.orderId} 주문이 생성되었습니다.`)
-      await loadOrders({ status: 'ALL', query: '' })
+      await loadOrders({ status: 'ALL', query: '', page: 0 })
     } catch (error) {
       setNotice(toErrorMessage(error, '주문 생성에 실패했습니다.'))
     } finally {
@@ -135,6 +160,7 @@ export function useOrderManagement() {
   return {
     amountInput,
     createState,
+    currentPage,
     events,
     handleCreateOrder,
     handleSelectOrder,
@@ -148,11 +174,15 @@ export function useOrderManagement() {
     selectedStatus,
     setAmountInput,
     setOrderForm,
-    setQuery,
-    setSelectedStatus,
+    setQuery: handleQueryChange,
+    setSelectedStatus: handleStatusChange,
     setStatusDraft,
     statusDraft,
     summary,
+    totalElements,
+    totalPages,
+    pageSize: ORDER_PAGE_SIZE,
+    setCurrentPage: handlePageChange,
     updateState,
   }
 }

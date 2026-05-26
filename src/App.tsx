@@ -259,11 +259,8 @@ function App() {
             <span className="eyebrow">Operations Console</span>
             <h1>{activeView === 'coupons' ? '쿠폰 발급 현황' : '실시간 주문 관리'}</h1>
           </div>
-          {activeView === 'coupons' ? (
-            <NoticeBanner notice={notice} />
-          ) : (
-            <div className="notice success">주문 접수, 결제 확인, 배송 상태를 실시간 운영 흐름으로 확인합니다.</div>
-          )}
+          {activeView === 'coupons' &&
+            <NoticeBanner notice={notice} />}
         </header>
 
         {activeView === 'coupons' ? (

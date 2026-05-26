@@ -14,12 +14,17 @@ export function OrderManagement() {
 
       <section className="order-layout">
         <OrderBoard
+          currentPage={orders.currentPage}
           loadState={orders.loadState}
           notice={orders.notice}
           orders={orders.orders}
+          pageSize={orders.pageSize}
           query={orders.query}
           selectedOrder={orders.selectedOrder}
           selectedStatus={orders.selectedStatus}
+          totalElements={orders.totalElements}
+          totalPages={orders.totalPages}
+          onPageChange={orders.setCurrentPage}
           onQueryChange={orders.setQuery}
           onSelectOrder={orders.handleSelectOrder}
           onStatusChange={orders.setSelectedStatus}
