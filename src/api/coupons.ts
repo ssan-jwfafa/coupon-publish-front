@@ -1,6 +1,6 @@
 import type { Coupon, CouponIssue, Remaining, Statistics } from '../types/coupon'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? ''
 
 export class ApiError extends Error {
   status: number

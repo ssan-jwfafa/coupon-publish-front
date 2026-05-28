@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useMemo, useState } from 'react'
 import type { SubmitEventHandler } from 'react'
 import {
@@ -10,7 +12,6 @@ import {
   isAlreadyIssuedError,
   issueCoupon,
 } from './api/coupons'
-import './App.css'
 import { CouponCreateForm } from './components/coupon/CouponCreateForm'
 import { CouponIssueForm } from './components/coupon/CouponIssueForm'
 import { CouponMetrics } from './components/coupon/CouponMetrics'
@@ -25,6 +26,8 @@ import { createInitialCouponForm } from './utils/couponForm'
 import { toApiDateTime } from './utils/date'
 
 function getViewFromHash(): AppView {
+  if (typeof window === 'undefined') return 'coupons'
+
   return window.location.hash === '#orders' ? 'orders' : 'coupons'
 }
 

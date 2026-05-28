@@ -1,6 +1,6 @@
 # Coupon Publish Front
 
-React, TypeScript, Vite 기반 쿠폰 발급 및 실시간 주문 관리 운영 화면입니다.
+Next.js, React, TypeScript 기반 쿠폰 발급 및 실시간 주문 관리 운영 화면입니다.
 
 백엔드 프로젝트 `C:\workspace\coupon-publish`와 함께 실행합니다.
 
@@ -49,29 +49,29 @@ npm run dev
 기본 접속 주소:
 
 ```text
-http://localhost:5173
+http://localhost:3000
 ```
 
 ## 환경 변수
 
-개발 환경 변수는 `.env.dev`에 둡니다. `npm run dev`는 `vite --mode dev`로 실행되어 이 파일을 읽습니다.
+개발 환경 변수는 `.env.development`에 둡니다. `npm run dev`는 `next dev`로 실행되어 이 파일을 읽습니다.
 
 ```text
-VITE_API_BASE_URL=
-VITE_API_PROXY_TARGET=http://localhost:8080
-VITE_KAFKA_UI_URL=http://localhost:8081
-VITE_REDIS_UI_URL=http://localhost:8082
+NEXT_PUBLIC_API_BASE_URL=
+API_PROXY_TARGET=http://localhost:8080
+NEXT_PUBLIC_KAFKA_UI_URL=http://localhost:8081
+NEXT_PUBLIC_REDIS_UI_URL=http://localhost:8082
 ```
 
-개발 서버에서는 `/api` 요청을 Vite proxy가 백엔드로 전달하므로 브라우저 CORS가 발생하지 않습니다.
+개발 서버에서는 `/api` 요청을 Next.js rewrites가 Spring Boot 백엔드로 전달하므로 브라우저 CORS가 발생하지 않습니다.
 
 백엔드를 `18080`으로 실행했다면:
 
 ```text
-VITE_API_PROXY_TARGET=http://localhost:18080
+API_PROXY_TARGET=http://localhost:18080
 ```
 
-배포 환경에서 API가 다른 도메인에 있다면 `VITE_API_BASE_URL`에 실제 API origin을 지정하고,
+배포 환경에서 API가 다른 도메인에 있다면 `NEXT_PUBLIC_API_BASE_URL`에 실제 API origin을 지정하고,
 백엔드 CORS 허용 origin을 프론트 배포 주소로 설정하세요.
 
 ## 백엔드 API 연결

@@ -1,6 +1,6 @@
 import type { Order, OrderCreatePayload, OrderEvent, OrderPage, OrderStatus, OrderSummary } from '../types/order'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? ''
 
 export class OrderApiError extends Error {
   status: number

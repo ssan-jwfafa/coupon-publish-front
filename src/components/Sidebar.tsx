@@ -1,7 +1,7 @@
 import { Database, ExternalLink, LayoutDashboard, RadioTower, ShoppingCart, Ticket } from 'lucide-react'
 
-const KAFKA_UI_URL = import.meta.env.VITE_KAFKA_UI_URL ?? 'http://localhost:8081'
-const REDIS_UI_URL = import.meta.env.VITE_REDIS_UI_URL ?? 'http://localhost:8082'
+const KAFKA_UI_URL = process.env.NEXT_PUBLIC_KAFKA_UI_URL ?? 'http://localhost:8081'
+const REDIS_UI_URL = process.env.NEXT_PUBLIC_REDIS_UI_URL ?? 'http://localhost:8082'
 
 export type AppView = 'coupons' | 'orders'
 
